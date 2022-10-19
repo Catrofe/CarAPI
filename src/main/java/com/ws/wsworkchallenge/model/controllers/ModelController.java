@@ -45,4 +45,10 @@ public class ModelController {
         return new ResponseEntity<>(newModel, HttpStatus.OK);
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteModel(@PathVariable Long id) {
+        service.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }
