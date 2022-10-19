@@ -1,8 +1,9 @@
 package com.ws.wsworkchallenge.brand.controllers;
-
 import com.ws.wsworkchallenge.brand.dto.RegisterBrand;
+import com.ws.wsworkchallenge.brand.dto.IdsForDelete;
 import com.ws.wsworkchallenge.brand.entity.Marca;
 import com.ws.wsworkchallenge.brand.service.BrandService;
+import com.ws.wsworkchallenge.brand.vo.ListErrorDeleted;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,5 +48,14 @@ public class BrandController {
     public ResponseEntity<Void> deleteBrand(@PathVariable Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping(value = "/deleteByList")
+    public ResponseEntity<ListErrorDeleted> deleteAllBrands(@RequestBody IdsForDelete ids) {
+        List<String> deleteOk = service.deleteAll(ids.getIds());
+        if (deleteOk.size() == 0) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(new ListErrorDeleted(deleteOk), HttpStatus.OK);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,13 +27,13 @@ public class BrandService {
         this.modelService = modelService;
     }
 
-    public Marca insert(RegisterBrand brand){
+    public Marca insert(RegisterBrand brand) {
         Marca newBrand = new Marca();
         newBrand.setNomeMarca(brand.getNomeMarca());
         return repository.save(newBrand);
     }
 
-    public Marca getBrand(Long id){
+    public Marca getBrand(Long id) {
         return repository.findById(id).orElseThrow(() -> new GenericException(String.format("Brand with id %d not found", id)));
     }
 
@@ -53,5 +54,23 @@ public class BrandService {
             throw new ImpossibleDelete("Unable to delete a Brand that has Models associated with it. Please delete Models first to ensure data integrity.");
         }
         repository.deleteById(getBrand(id).getId());
+    }
+
+    public List<String> deleteAll(List<Long> ids) {
+        List<String> error = new ArrayList<>();
+        for (Long id : ids) {
+            try {
+                Marca brand = getBrand(id);
+                Boolean exists = modelService.existsByBrand(brand);
+                if (exists) {
+                    error.add(String.format("Unable to delete a Brand that has Models associated with it. Please delete Models first to ensure data integrity. Brand id: %d", id));
+                } else {
+                    repository.deleteById(id);
+                }
+            } catch (Exception e) {
+                error.add(String.format("Brand with id %d not found", id));
+            }
+        }
+        return error;
     }
 }
