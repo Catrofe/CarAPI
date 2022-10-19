@@ -5,5 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class SQLExceptionDetails extends ExceptionDetails{
+public class GenericExceptionDetails extends ExceptionDetails {
+
 }
+

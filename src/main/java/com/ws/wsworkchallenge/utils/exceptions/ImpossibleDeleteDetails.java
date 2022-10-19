@@ -5,7 +5,6 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class ItemNotFoudDetails extends ExceptionDetails {
+public class ImpossibleDeleteDetails extends ExceptionDetails {
 
 }
-

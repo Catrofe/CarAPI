@@ -19,7 +19,7 @@ public class Model {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(nullable = false)
     private Marca marca;
     private String name;

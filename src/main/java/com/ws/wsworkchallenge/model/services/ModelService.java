@@ -6,18 +6,28 @@ import com.ws.wsworkchallenge.model.dto.CreateModelDTO;
 import com.ws.wsworkchallenge.model.dto.EditModelDTO;
 import com.ws.wsworkchallenge.model.entity.Model;
 import com.ws.wsworkchallenge.model.repository.ModelRepository;
-import com.ws.wsworkchallenge.utils.exceptions.ItemNotFound;
+import com.ws.wsworkchallenge.utils.exceptions.GenericException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Component
 @Service
 public class ModelService {
 
     private final ModelRepository repository;
-    private final BrandService brandService;
+    private BrandService brandService;
+
+    @Autowired
+    public void BrandServiceCreate(@Lazy BrandService brandService) {
+        this.brandService = brandService;
+    }
+
     public Model create(CreateModelDTO model) {
         Marca marca = brandService.getBrand(model.getIdMarca());
         Model newModel = new Model();
@@ -28,7 +38,7 @@ public class ModelService {
     }
 
     public Model findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new ItemNotFound(String.format("Model with id %d not found", id)));
+        return repository.findById(id).orElseThrow(() -> new GenericException(String.format("Model with id %d not found", id)));
     }
 
     public List<Model> findAll() {

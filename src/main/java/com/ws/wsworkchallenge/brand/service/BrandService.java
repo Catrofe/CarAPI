@@ -3,9 +3,12 @@ package com.ws.wsworkchallenge.brand.service;
 import com.ws.wsworkchallenge.brand.dto.RegisterBrand;
 import com.ws.wsworkchallenge.brand.entity.Marca;
 import com.ws.wsworkchallenge.brand.repository.BrandRepository;
-import com.ws.wsworkchallenge.utils.exceptions.ItemNotFound;
-import com.ws.wsworkchallenge.utils.exceptions.SQLException;
+import com.ws.wsworkchallenge.model.services.ModelService;
+import com.ws.wsworkchallenge.utils.exceptions.GenericException;
+import com.ws.wsworkchallenge.utils.exceptions.ImpossibleDelete;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +19,13 @@ public class BrandService {
 
     private final BrandRepository repository;
 
+    private ModelService modelService;
+
+    @Autowired
+    public void ModelServiceCreate(@Lazy ModelService modelService) {
+        this.modelService = modelService;
+    }
+
     public Marca insert(RegisterBrand brand){
         Marca newBrand = new Marca();
         newBrand.setNomeMarca(brand.getNomeMarca());
@@ -23,7 +33,7 @@ public class BrandService {
     }
 
     public Marca getBrand(Long id){
-        return repository.findById(id).orElseThrow(() -> new ItemNotFound(String.format("Brand with id %d not found", id)));
+        return repository.findById(id).orElseThrow(() -> new GenericException(String.format("Brand with id %d not found", id)));
     }
 
     public List<Marca> getAllBrands() {
@@ -37,6 +47,11 @@ public class BrandService {
     }
 
     public void delete(Long id) {
-            repository.deleteRefactoring(getBrand(id).getId()).orElseThrow(() -> new SQLException("Testing delete"));
+        Marca brand = getBrand(id);
+        Boolean exists = modelService.existsByBrand(brand);
+        if (exists) {
+            throw new ImpossibleDelete("Unable to delete a Brand that has Models associated with it. Please delete Models first to ensure data integrity.");
+        }
+        repository.deleteById(getBrand(id).getId());
     }
 }
