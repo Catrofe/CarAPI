@@ -1,12 +1,14 @@
-package com.ws.wsworkchallenge.brand.vo;
+package com.ws.wsworkchallenge.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeletedByList {
-    private String message;
+public class ListErrorDTO {
+    private List<String> error;
 }

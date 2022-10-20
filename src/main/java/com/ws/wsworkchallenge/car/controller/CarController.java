@@ -2,8 +2,10 @@ package com.ws.wsworkchallenge.car.controller;
 
 import com.ws.wsworkchallenge.car.dto.CarEditDTO;
 import com.ws.wsworkchallenge.car.dto.CarRegisterDTO;
+import com.ws.wsworkchallenge.car.dto.IdsForDeleteCar;
 import com.ws.wsworkchallenge.car.service.CarService;
 import com.ws.wsworkchallenge.car.vo.CarGetVO;
+import com.ws.wsworkchallenge.car.vo.ListErrorModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,4 +46,18 @@ public class CarController {
         return new ResponseEntity<>(newCar, HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteCar(@PathVariable Long id) {
+        service.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping(value = "/deleteByList")
+    public ResponseEntity<ListErrorModel> deleteCar(@RequestBody IdsForDeleteCar ids) {
+        List<String> deleteOk = service.deleteByList(ids.getIds());
+        if (deleteOk.size() == 0) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(new ListErrorModel(deleteOk), HttpStatus.OK);
+    }
 }

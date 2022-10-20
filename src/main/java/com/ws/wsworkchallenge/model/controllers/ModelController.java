@@ -1,7 +1,9 @@
 package com.ws.wsworkchallenge.model.controllers;
 
+import com.ws.wsworkchallenge.car.vo.ListErrorModel;
 import com.ws.wsworkchallenge.model.dto.CreateModelDTO;
 import com.ws.wsworkchallenge.model.dto.EditModelDTO;
+import com.ws.wsworkchallenge.model.dto.IdsForDeleteModel;
 import com.ws.wsworkchallenge.model.entity.Model;
 import com.ws.wsworkchallenge.model.services.ModelService;
 import lombok.RequiredArgsConstructor;
@@ -45,10 +47,19 @@ public class ModelController {
         return new ResponseEntity<>(newModel, HttpStatus.OK);
     }
 
-    @DeleteMapping
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteModel(@PathVariable Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping(value = "/deleteByList")
+    public ResponseEntity<ListErrorModel> deleteAllModels(@RequestBody IdsForDeleteModel ids) {
+        List<String> deleteOk = service.deleteByList(ids.getIds());
+        if (deleteOk.size() == 0) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(new ListErrorModel(deleteOk), HttpStatus.OK);
     }
 
 }

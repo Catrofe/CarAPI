@@ -2,17 +2,21 @@ package com.ws.wsworkchallenge.model.services;
 
 import com.ws.wsworkchallenge.brand.entity.Marca;
 import com.ws.wsworkchallenge.brand.service.BrandService;
+import com.ws.wsworkchallenge.car.entity.Car;
+import com.ws.wsworkchallenge.car.service.CarService;
 import com.ws.wsworkchallenge.model.dto.CreateModelDTO;
 import com.ws.wsworkchallenge.model.dto.EditModelDTO;
 import com.ws.wsworkchallenge.model.entity.Model;
 import com.ws.wsworkchallenge.model.repository.ModelRepository;
 import com.ws.wsworkchallenge.utils.exceptions.GenericException;
+import com.ws.wsworkchallenge.utils.exceptions.ImpossibleDelete;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,10 +26,16 @@ public class ModelService {
 
     private final ModelRepository repository;
     private BrandService brandService;
+    private CarService carService;
 
     @Autowired
     public void BrandServiceCreate(@Lazy BrandService brandService) {
         this.brandService = brandService;
+    }
+
+    @Autowired
+    public void CarServiceCreate(@Lazy CarService carService) {
+        this.carService = carService;
     }
 
     public Model create(CreateModelDTO model) {
@@ -62,7 +72,24 @@ public class ModelService {
 
     public void delete(Long id) {
         Model model = findById(id);
-        repository.delete(model);
+        try {
+            repository.delete(model);
+        } catch(Exception e) {
+            throw new ImpossibleDelete(String.format("Impossible to delete model with id %d. Please delete first car's associated with model.", id));
+        }
+    }
+
+    public List<String> deleteByList(List<Long> ids) {
+        List<String> error = new ArrayList<>();
+        for (Long id : ids) {
+            Boolean exists = carService.existsByModel(findById(id));
+            if (exists) {
+                error.add(String.format("Impossible to delete model with id %d. Please delete first car's associated with model.", id));
+            } else {
+                repository.deleteById(id);
+            }
+        }
+        return error;
     }
 
     public Boolean existsByBrand(Marca marca) {

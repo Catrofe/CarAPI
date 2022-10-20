@@ -11,6 +11,7 @@ import com.ws.wsworkchallenge.utils.exceptions.GenericException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,5 +87,26 @@ public class CarService {
                 car.getModelo().getValorFipe(),
                 car.getCor(),
                 car.getTimestampCadastro());
+    }
+
+    public Boolean existsByModel(Model model) {
+        return repository.existsByModelo(model);
+    }
+
+    public void delete(Long id) {
+        Car car = repository.findById(id).orElseThrow(() -> new GenericException(String.format("Car with id %d not found", id)));
+        repository.delete(car);
+    }
+
+    public List<String> deleteByList(List<Long> ids) {
+        List<String> error = new ArrayList<>();
+        for (Long id : ids) {
+            try {
+                delete(id);
+            } catch (Exception e) {
+                error.add(String.format("Car with id %d not found", id));
+            }
+        }
+        return error;
     }
 }
