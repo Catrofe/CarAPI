@@ -7,8 +7,9 @@ import com.ws.wsworkchallenge.model.dto.CreateModelDTO;
 import com.ws.wsworkchallenge.model.dto.EditModelDTO;
 import com.ws.wsworkchallenge.model.entity.Model;
 import com.ws.wsworkchallenge.model.repository.ModelRepository;
-import com.ws.wsworkchallenge.utils.exceptions.GenericException;
-import com.ws.wsworkchallenge.utils.exceptions.ImpossibleDelete;
+import com.ws.wsworkchallenge.model.vo.ModelVO;
+import com.ws.wsworkchallenge.utils.exceptions.NotFoundException;
+import com.ws.wsworkchallenge.utils.exceptions.ConflictException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -24,74 +26,63 @@ import java.util.List;
 public class ModelService {
 
     private final ModelRepository repository;
-    private BrandService brandService;
-    private CarService carService;
+    private final BrandService brandService;
 
-    @Autowired
-    public void BrandServiceCreate(@Lazy BrandService brandService) {
-        this.brandService = brandService;
+    public ModelVO returnVO(Model model) {
+        ModelVO modelVO = new ModelVO();
+        modelVO.setId(model.getId());
+        modelVO.setName(model.getName());
+        modelVO.setValueFipe(model.getValueFipe());
+        modelVO.setIdBrand(model.getBrand().getId());
+        modelVO.setNameBrand(model.getBrand().getNameBrand());
+        return modelVO;
     }
 
-    @Autowired
-    public void CarServiceCreate(@Lazy CarService carService) {
-        this.carService = carService;
-    }
-
-    public Model create(CreateModelDTO model) {
-        Brand marca = brandService.findById(model.getIdMarca());
+    public ModelVO insert(CreateModelDTO model) {
+        Brand brand = brandService.findById(model.getBrandId());
         Model newModel = new Model();
         newModel.setName(model.getName());
-        newModel.setValorFipe(model.getValorFipe());
-        newModel.setMarca(marca);
-        return repository.save(newModel);
+        newModel.setValueFipe(model.getValueFipe());
+        newModel.setBrand(brand);
+        newModel = repository.save(newModel);
+        return returnVO(newModel);
     }
 
-    public Model findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new GenericException(String.format("Model with id %d not found", id)));
+    public ModelVO findById(Long id) {
+        Model model = repository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Model with id %d not found", id)));
+        return returnVO(model);
     }
 
-    public List<Model> findAll() {
-        return repository.findAll();
+    public Model findByIdRaw(Long id) {
+        return repository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Model with id %d not found", id)));
     }
 
-    public Model update(EditModelDTO model, Long id) {
-        Model newModel = findById(id);
+    public List<ModelVO> findAll() {
+        return repository.findAll().stream().map(this::returnVO).collect(Collectors.toList());
+    }
+
+    public ModelVO update(EditModelDTO model, Long id) {
+        Model newModel = findByIdRaw(id);
         if (model.getName() != null) {
             newModel.setName(model.getName());
         }
-        if (model.getValorFipe() != null) {
-            newModel.setValorFipe(model.getValorFipe());
+        if (model.getValueFipe() != null) {
+            newModel.setValueFipe(model.getValueFipe());
         }
-        if (model.getIdMarca() != null) {
-            Brand marca = brandService.findById(model.getIdMarca());
-            newModel.setMarca(marca);
+        if (model.getBrandId() != null) {
+            Brand marca = brandService.findById(model.getBrandId());
+            newModel.setBrand(marca);
         }
-        return repository.save(newModel);
+        return returnVO(repository.save(newModel));
     }
 
     public void delete(Long id) {
-        Model model = findById(id);
+        Model model = findByIdRaw(id);
         try {
             repository.delete(model);
         } catch(Exception e) {
-            throw new ImpossibleDelete(String.format("Impossible to delete model with id %d. Please delete first car's associated with model.", id));
+            throw new ConflictException(String.format("Impossible to delete model with id %d. Please delete first car's associated with model.", id));
         }
     }
 
-    public List<String> deleteByList(List<Long> ids) {
-        List<String> error = new ArrayList<>();
-        for (Long id : ids) {
-            Boolean exists = carService.existsByModel(findById(id));
-            if (exists) {
-                error.add(String.format("Impossible to delete model with id %d. Please delete first car's associated with model.", id));
-            } else {
-                repository.deleteById(id);
-            }
-        }
-        return error;
-    }
-
-    public Boolean existsByBrand(Brand brand) {
-        return repository.existsByMarca(brand);
-    }
 }

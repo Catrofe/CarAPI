@@ -13,12 +13,12 @@ import javax.validation.constraints.NotNull;
 public class CreateModelDTO {
 
     @NotNull
-    private Long idMarca;
+    private Long BrandId;
 
     @NotNull
     @NotBlank
     private String name;
 
     @NotNull
-    private Double valorFipe;
+    private Double valueFipe;
 }

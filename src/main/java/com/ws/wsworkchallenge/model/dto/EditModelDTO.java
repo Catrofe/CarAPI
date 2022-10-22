@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EditModelDTO implements EditModelDetail {
-    private Long idMarca;
+    private Long brandId;
     private String name;
-    private Double valorFipe;
+    private Double valueFipe;
 }

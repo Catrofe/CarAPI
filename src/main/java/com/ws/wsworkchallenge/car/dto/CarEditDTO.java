@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CarEditDTO implements CarEdit {
-    private String cor;
-    private Long modeloId;
-    private Integer ano;
-    private String combustivel;
-    private Byte numPortas;
+    private String color;
+    private Long modelId;
+    private Integer year;
+    private String fuel;
+    private Byte numberDoors;
 }

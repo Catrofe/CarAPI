@@ -19,6 +19,6 @@ public class CarGetVO {
     private Byte num_portas;
     private Double valor_fipe;
     private String cor;
-    private Timestamp timestamp_cadastro;
+    private Long timestamp_cadastro;
 
 }

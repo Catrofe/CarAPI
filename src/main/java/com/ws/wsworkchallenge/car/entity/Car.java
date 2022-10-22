@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -19,13 +18,13 @@ public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Timestamp timestampCadastro;
+    private Long timestampRegistration;
 
     @ManyToOne
-    @JoinColumn(name = "modelo_id")
-    private Model modelo;
-    private Integer ano;
-    private String combustivel;
-    private Byte num_portas;
-    private String cor;
+    @JoinColumn(name = "model_id")
+    private Model model;
+    private Integer year;
+    private String fuel;
+    private Byte numberDoors;
+    private String color;
 }

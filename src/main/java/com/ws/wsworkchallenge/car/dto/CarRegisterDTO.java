@@ -13,19 +13,19 @@ import javax.validation.constraints.NotNull;
 public class CarRegisterDTO {
 
     @NotNull
-    private Long modeloId;
+    private Long modelId;
 
     @NotNull
-    private Integer ano;
-
-    @NotNull
-    @NotBlank
-    private String combustivel;
-
-    @NotNull
-    private Byte numPortas;
+    private Integer year;
 
     @NotNull
     @NotBlank
-    private String cor;
+    private String fuel;
+
+    @NotNull
+    private Byte numberDoors;
+
+    @NotNull
+    @NotBlank
+    private String color;
 }

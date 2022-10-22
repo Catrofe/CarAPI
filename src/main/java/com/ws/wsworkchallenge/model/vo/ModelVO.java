@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListErrorDTO {
-    private List<String> error;
+public class ModelVO {
+    private Long id;
+    private String nameBrand;
+    private Long idBrand;
+    private String name;
+    private Double valueFipe;
 }

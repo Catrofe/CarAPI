@@ -20,8 +20,8 @@ public class Model {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private Brand marca;
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
     private String name;
-    private Double valorFipe;
+    private Double valueFipe;
 }

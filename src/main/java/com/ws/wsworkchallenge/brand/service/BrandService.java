@@ -3,8 +3,8 @@ package com.ws.wsworkchallenge.brand.service;
 import com.ws.wsworkchallenge.brand.dto.RegisterBrand;
 import com.ws.wsworkchallenge.brand.entity.Brand;
 import com.ws.wsworkchallenge.brand.repository.BrandRepository;
-import com.ws.wsworkchallenge.utils.exceptions.GenericException;
-import com.ws.wsworkchallenge.utils.exceptions.ImpossibleDelete;
+import com.ws.wsworkchallenge.utils.exceptions.NotFoundException;
+import com.ws.wsworkchallenge.utils.exceptions.ConflictException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class BrandService {
     }
 
     public Brand findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new GenericException(String.format("Brand with id %d not found", id)));
+        return repository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Brand with id %d not found", id)));
     }
 
     public List<Brand> getAllBrands() {
@@ -41,7 +41,7 @@ public class BrandService {
         try {
             repository.delete(brand);
         } catch (Exception e) {
-            throw new ImpossibleDelete(String.format("Brand with id %d can't be deleted", id));
+            throw new ConflictException(String.format("Brand with id %d can't be deleted", id));
         }
     }
 
