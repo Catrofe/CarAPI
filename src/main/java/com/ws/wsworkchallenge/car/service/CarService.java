@@ -44,7 +44,7 @@ public class CarService {
         List<Car> cars = repository.findAll();
         return cars.stream().map(car -> new CarGetVO(car.getId(),
                                 car.getModelo().getMarca().getId(),
-                                car.getModelo().getMarca().getNomeMarca(),
+                                car.getModelo().getMarca().getNameBrand(),
                                 car.getModelo().getName(),
                                 car.getAno(),
                                 car.getCombustivel(),
@@ -79,7 +79,7 @@ public class CarService {
     public static CarGetVO createDTO(Car car) {
         return new CarGetVO(car.getId(),
                 car.getModelo().getMarca().getId(),
-                car.getModelo().getMarca().getNomeMarca(),
+                car.getModelo().getMarca().getNameBrand(),
                 car.getModelo().getName(),
                 car.getAno(),
                 car.getCombustivel(),

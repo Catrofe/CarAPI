@@ -1,9 +1,7 @@
 package com.ws.wsworkchallenge.brand.controllers;
 import com.ws.wsworkchallenge.brand.dto.RegisterBrand;
-import com.ws.wsworkchallenge.brand.dto.IdsForDelete;
-import com.ws.wsworkchallenge.brand.entity.Marca;
+import com.ws.wsworkchallenge.brand.entity.Brand;
 import com.ws.wsworkchallenge.brand.service.BrandService;
-import com.ws.wsworkchallenge.brand.vo.ListErrorDeleted;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,42 +18,33 @@ public class BrandController {
     private final BrandService service;
 
     @PostMapping
-    public ResponseEntity<Marca> create(@RequestBody @Valid RegisterBrand marca){
-        Marca newBrand = service.insert(marca);
+    public ResponseEntity<Brand> save(@RequestBody @Valid RegisterBrand brand){
+        Brand newBrand = service.insert(brand);
         return new ResponseEntity<>(newBrand, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Marca> getBrand(@PathVariable Long id){
-        Marca brand = service.getBrand(id);
+    public ResponseEntity<Brand> findById(@PathVariable Long id){
+        Brand brand = service.findById(id);
         return new ResponseEntity<>(brand, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<Marca>> getBrands(){
-        List<Marca> brand = service.getAllBrands();
-        return new ResponseEntity<>(brand, HttpStatus.OK);
+    public ResponseEntity<List<Brand>> findAll(){
+        List<Brand> brands = service.getAllBrands();
+        return new ResponseEntity<>(brands, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Marca> updateBrand(@RequestBody @Valid RegisterBrand marca,
+    public ResponseEntity<Brand> update(@RequestBody @Valid RegisterBrand brand,
                                              @PathVariable Long id){
-        Marca newBrand = service.update(marca, id);
+        Brand newBrand = service.update(brand, id);
         return new ResponseEntity<>(newBrand, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteBrand(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @DeleteMapping(value = "/deleteByList")
-    public ResponseEntity<ListErrorDeleted> deleteAllBrands(@RequestBody IdsForDelete ids) {
-        List<String> deleteOk = service.deleteAll(ids.getIds());
-        if (deleteOk.size() == 0) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(new ListErrorDeleted(deleteOk), HttpStatus.OK);
     }
 }

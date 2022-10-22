@@ -1,17 +1,13 @@
 package com.ws.wsworkchallenge.brand.service;
 
 import com.ws.wsworkchallenge.brand.dto.RegisterBrand;
-import com.ws.wsworkchallenge.brand.entity.Marca;
+import com.ws.wsworkchallenge.brand.entity.Brand;
 import com.ws.wsworkchallenge.brand.repository.BrandRepository;
-import com.ws.wsworkchallenge.model.services.ModelService;
 import com.ws.wsworkchallenge.utils.exceptions.GenericException;
 import com.ws.wsworkchallenge.utils.exceptions.ImpossibleDelete;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,57 +16,33 @@ public class BrandService {
 
     private final BrandRepository repository;
 
-    private ModelService modelService;
-
-    @Autowired
-    public void ModelServiceCreate(@Lazy ModelService modelService) {
-        this.modelService = modelService;
-    }
-
-    public Marca insert(RegisterBrand brand) {
-        Marca newBrand = new Marca();
-        newBrand.setNomeMarca(brand.getNomeMarca());
+    public Brand insert(RegisterBrand brand) {
+        Brand newBrand = new Brand();
+        newBrand.setNameBrand(brand.getNameBrand());
         return repository.save(newBrand);
     }
 
-    public Marca getBrand(Long id) {
+    public Brand findById(Long id) {
         return repository.findById(id).orElseThrow(() -> new GenericException(String.format("Brand with id %d not found", id)));
     }
 
-    public List<Marca> getAllBrands() {
+    public List<Brand> getAllBrands() {
         return repository.findAll();
     }
 
-    public Marca update(RegisterBrand marca, Long id) {
-        Marca brand = getBrand(id); // Reutilizando a função para não duplicar código, DRY.
-        brand.setNomeMarca(marca.getNomeMarca());
+    public Brand update(RegisterBrand marca, Long id) {
+        Brand brand = findById(id);
+        brand.setNameBrand(marca.getNameBrand());
         return repository.save(brand);
     }
 
     public void delete(Long id) {
-        Marca brand = getBrand(id);
-        Boolean exists = modelService.existsByBrand(brand);
-        if (exists) {
-            throw new ImpossibleDelete("Unable to delete a Brand that has Models associated with it. Please delete Models first to ensure data integrity.");
+        Brand brand = findById(id);
+        try {
+            repository.delete(brand);
+        } catch (Exception e) {
+            throw new ImpossibleDelete(String.format("Brand with id %d can't be deleted", id));
         }
-        repository.deleteById(getBrand(id).getId());
     }
 
-    public List<String> deleteAll(List<Long> ids) {
-        List<String> error = new ArrayList<>();
-        for (Long id : ids) {
-            try {
-                Marca brand = getBrand(id);
-                Boolean exists = modelService.existsByBrand(brand);
-                if (exists) {
-                    error.add(String.format("Unable to delete a Brand that has Models associated with it. Please delete Models first to ensure data integrity. Brand id: %d", id));
-                } else {
-                    repository.deleteById(id);
-                }
-            } catch (Exception e) {
-                error.add(String.format("Brand with id %d not found", id));
-            }
-        }
-        return error;
-    }
 }

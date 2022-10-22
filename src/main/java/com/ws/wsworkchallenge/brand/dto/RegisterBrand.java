@@ -14,5 +14,5 @@ public class RegisterBrand {
 
     @NotNull
     @NotBlank
-    private String nomeMarca;
+    private String nameBrand;
 }

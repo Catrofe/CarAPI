@@ -1,8 +1,7 @@
 package com.ws.wsworkchallenge.model.services;
 
-import com.ws.wsworkchallenge.brand.entity.Marca;
+import com.ws.wsworkchallenge.brand.entity.Brand;
 import com.ws.wsworkchallenge.brand.service.BrandService;
-import com.ws.wsworkchallenge.car.entity.Car;
 import com.ws.wsworkchallenge.car.service.CarService;
 import com.ws.wsworkchallenge.model.dto.CreateModelDTO;
 import com.ws.wsworkchallenge.model.dto.EditModelDTO;
@@ -39,7 +38,7 @@ public class ModelService {
     }
 
     public Model create(CreateModelDTO model) {
-        Marca marca = brandService.getBrand(model.getIdMarca());
+        Brand marca = brandService.findById(model.getIdMarca());
         Model newModel = new Model();
         newModel.setName(model.getName());
         newModel.setValorFipe(model.getValorFipe());
@@ -64,7 +63,7 @@ public class ModelService {
             newModel.setValorFipe(model.getValorFipe());
         }
         if (model.getIdMarca() != null) {
-            Marca marca = brandService.getBrand(model.getIdMarca());
+            Brand marca = brandService.findById(model.getIdMarca());
             newModel.setMarca(marca);
         }
         return repository.save(newModel);
@@ -92,7 +91,7 @@ public class ModelService {
         return error;
     }
 
-    public Boolean existsByBrand(Marca marca) {
-        return repository.existsByMarca(marca);
+    public Boolean existsByBrand(Brand brand) {
+        return repository.existsByMarca(brand);
     }
 }

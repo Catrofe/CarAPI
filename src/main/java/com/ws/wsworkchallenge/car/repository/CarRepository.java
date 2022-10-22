@@ -1,6 +1,5 @@
 package com.ws.wsworkchallenge.car.repository;
 
-import com.ws.wsworkchallenge.brand.entity.Marca;
 import com.ws.wsworkchallenge.car.entity.Car;
 import com.ws.wsworkchallenge.model.entity.Model;
 import org.springframework.data.jpa.repository.JpaRepository;

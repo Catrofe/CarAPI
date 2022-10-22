@@ -1,6 +1,6 @@
 package com.ws.wsworkchallenge.model.entity;
 
-import com.ws.wsworkchallenge.brand.entity.Marca;
+import com.ws.wsworkchallenge.brand.entity.Brand;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class Model {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Marca marca;
+    private Brand marca;
     private String name;
     private Double valorFipe;
 }
