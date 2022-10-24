@@ -1,8 +1,8 @@
 spring:
   datasource:
-    password: plataforma
-    username: plataforma
-    url: jdbc:postgresql://localhost:5432/transaction
+    password: root
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/wswork
     driverClassName: org.postgresql.Driver
   jpa:
     show-sql: false

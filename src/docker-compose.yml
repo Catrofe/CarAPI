@@ -1,0 +1,13 @@
+version: "3"
+services:
+
+  DBpostgres:
+    image: postgres:11
+    container_name: WS
+    restart: always
+    environment:
+      - POSTGRES_DB=wswork
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    ports:
+      - 5432:5432
