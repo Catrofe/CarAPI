@@ -1,5 +1,3 @@
-# Teste Técnico WS Work JAVA.
-
 ### Como Rodar o Código
 
 Por ser uma aplicação spring é bem simples, tudo que precisa é rodar as dependencias do maven e subir o docker.
@@ -30,8 +28,6 @@ Busquei tambem não aumentar a complexidade do teste, mantive o solicitado na do
 
 
 Para facilitar o avaliador fiz de uma forma que os endpoints tanto do Java quanto do Kotlin são identicos. Tanto no input quanto no Output. Acredito que isso possa facilitar o avaliador.
-
-Desde já agradeço a Oportunidade a toda equipe WS.
 
 Postman Brand: https://documenter.getpostman.com/view/14906669/2s84LNUt72
 Postman Model: https://documenter.getpostman.com/view/14906669/2s84LNUt73
